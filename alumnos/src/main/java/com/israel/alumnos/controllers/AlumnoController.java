@@ -4,12 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.israel.alumnos.model.Alumno;
-import com.israel.alumnos.repository.AlumnoRepository;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.israel.alumnos.model.Alumno;
+import com.israel.alumnos.repository.AlumnoRepository;
 
 @RestController
 @RequestMapping("/alumnos")
@@ -33,7 +32,7 @@ public class AlumnoController {
     }
 
     @GetMapping("/traer-alumno/{id}")
-    public ResponseEntity<Alumno> TraerUnAlumno(@PathVariable Long id) {
+    public ResponseEntity<Alumno> TraerUnAlumno(@PathVariable long id) {
         return alumnoRepository.findById(id)
                 .map(alumno -> ResponseEntity.ok(alumno))
                 .orElse(ResponseEntity.notFound().build());
@@ -41,6 +40,7 @@ public class AlumnoController {
 
     // Metodo para insertar un alumno en la base de datos
     @PostMapping("/insertar-alumnos")
+    @SuppressWarnings("null")
     public Alumno insertarAlumno(@RequestBody Alumno alumno) {
         return alumnoRepository.save(alumno);
 
@@ -48,7 +48,7 @@ public class AlumnoController {
 
     // Metodo para editar un alumno en la base de datos
     @PutMapping("/editar-alumnos/{id}")
-    public ResponseEntity<Alumno> actualizarAlumno(@PathVariable Long id, @RequestBody Alumno alumno) {
+    public ResponseEntity<Alumno> actualizarAlumno(@PathVariable long id, @RequestBody Alumno alumno) {
         return alumnoRepository.findById(id).map(alumnoExistente -> {
             alumnoExistente.setNombre(alumno.getNombre());
             alumnoExistente.setApellido(alumno.getApellido());
@@ -64,7 +64,7 @@ public class AlumnoController {
 
     // metodo para eliminar un alumno de la base de datos
     @DeleteMapping("/eliminar-alumnos/{id}")
-    public void eliminarAlumno(@PathVariable Long id) {
+    public void eliminarAlumno(@PathVariable long id) {
         alumnoRepository.deleteById(id);
     }
 
