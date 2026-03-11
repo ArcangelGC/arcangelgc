@@ -15,19 +15,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Alumno {
+public class Docente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String numeroControl;
+    private String numeroEmpleado;
     private String nombre;
     private String apellido;
     private String telefono;
     private String email;
-    private String carrera;
+    private String departamento;
     private String imagenURL;
-
 
 }

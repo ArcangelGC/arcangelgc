@@ -1,7 +1,10 @@
 package com.israel.alumnos.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
+import com.israel.alumnos.services.AlumnoService;
+import jakarta.persistence.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,49 +26,34 @@ import com.israel.alumnos.repository.AlumnoRepository;
 public class AlumnoController {
 
     @Autowired
-    private AlumnoRepository alumnoRepository;
+    private AlumnoService alumnoService;
 
-    // Metodo get para traer todos los alumnos de la base de datos
     @GetMapping("/traer-alumnos")
     public List<Alumno> TraerAlumnos() {
-        return alumnoRepository.findAll();
+        return alumnoService.obtenerTodos();
     }
 
     @GetMapping("/traer-alumno/{id}")
     public ResponseEntity<Alumno> TraerUnAlumno(@PathVariable long id) {
-        return alumnoRepository.findById(id)
-                .map(alumno -> ResponseEntity.ok(alumno))
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Alumno> alumno =alumnoService.obtenerPorID(id);
+return  alumno.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // Metodo para insertar un alumno en la base de datos
     @PostMapping("/insertar-alumnos")
     @SuppressWarnings("null")
     public Alumno insertarAlumno(@RequestBody Alumno alumno) {
-        return alumnoRepository.save(alumno);
-
+        return alumnoService.guardarAlumno(alumno);
     }
-
-    // Metodo para editar un alumno en la base de datos
     @PutMapping("/editar-alumnos/{id}")
     public ResponseEntity<Alumno> actualizarAlumno(@PathVariable long id, @RequestBody Alumno alumno) {
-        return alumnoRepository.findById(id).map(alumnoExistente -> {
-            alumnoExistente.setNombre(alumno.getNombre());
-            alumnoExistente.setApellido(alumno.getApellido());
-            alumnoExistente.setEmail(alumno.getEmail());
-            alumnoExistente.setNumeroControl(alumno.getNumeroControl());
-            alumnoExistente.setTelefono(alumno.getTelefono());
-            alumnoExistente.setCarrera(alumno.getCarrera());
-            alumnoExistente.setImagenURL(alumno.getImagenURL());
-            Alumno actualizado = alumnoRepository.save(alumnoExistente);
-            return ResponseEntity.ok(actualizado);
-        }).orElse(ResponseEntity.notFound().build());
+Optional<Alumno>actualizado = alumnoService.actualizarAlumno(id,alumno);
+return actualizado.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // metodo para eliminar un alumno de la base de datos
-    @DeleteMapping("/eliminar-alumnos/{id}")
-    public void eliminarAlumno(@PathVariable long id) {
-        alumnoRepository.deleteById(id);
-    }
+@DeleteMapping("/eliminar-alumno/{id}")
+    public ResponseEntity<Void> eliminarAlumno(@PathVariable Long id){
+        alumnoService.eliminarAlumno(id);
+        return ResponseEntity.ok().build();
+}
 
 }
